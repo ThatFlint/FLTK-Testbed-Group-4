@@ -6,7 +6,7 @@ import json
 # Setting the seed for Torch
 import yaml
 
-from fltk.nets import Cifar10CNN, FashionMNISTCNN, Cifar100ResNet, FashionMNISTResNet, Cifar10ResNet, Cifar100VGG
+from fltk.nets import Cifar10CNN, FashionMNISTCNN, Cifar100ResNet, FashionMNISTResNet, Cifar10ResNet, Cifar100VGG, WikiText2
 
 SEED = 1
 torch.manual_seed(SEED)
@@ -55,27 +55,30 @@ class Arguments:
             "Cifar10CNN" : Cifar10CNN,
             "Cifar10ResNet" : Cifar10ResNet,
             "FashionMNISTCNN" : FashionMNISTCNN,
-            "FashionMNISTResNet" : FashionMNISTResNet
+            "FashionMNISTResNet" : FashionMNISTResNet,
+            "WikiText2": WikiText2
 
         }
         self.net = None
-        self.set_net_by_name('Cifar10CNN')
+        self.set_net_by_name('WikiText2')
         # self.net = FashionMNISTCNN
         # self.net = Cifar100ResNet
         # self.net = FashionMNISTResNet
         # self.net = Cifar10ResNet
         # self.net = Cifar10ResNet
-        self.dataset_name = 'cifar10'
+        self.dataset_name = 'wikitext2'
         self.train_data_loader_pickle_path = {
             'cifar10': 'data_loaders/cifar10/train_data_loader.pickle',
             'fashion-mnist': 'data_loaders/fashion-mnist/train_data_loader.pickle',
             'cifar100': 'data_loaders/cifar100/train_data_loader.pickle',
+            'wikitext2': 'data_loaders/wikitext2/train_data_loader.pickle'
         }
 
         self.test_data_loader_pickle_path = {
             'cifar10': 'data_loaders/cifar10/test_data_loader.pickle',
             'fashion-mnist': 'data_loaders/fashion-mnist/test_data_loader.pickle',
             'cifar100': 'data_loaders/cifar100/test_data_loader.pickle',
+            'wikitext2': 'data_loaders/wikitext2/test_data_loader.pickle'
         }
 
         # self.train_data_loader_pickle_path = "data_loaders/cifar10/train_data_loader.pickle"
@@ -136,13 +139,13 @@ class Arguments:
         return list(self.available_nets.keys())
 
 
-    def set_train_data_loader_pickle_path(self, path, name='cifar10'):
+    def set_train_data_loader_pickle_path(self, path, name='wikitext2'):
         self.train_data_loader_pickle_path[name] = path
 
     def get_train_data_loader_pickle_path(self):
         return self.train_data_loader_pickle_path[self.dataset_name]
 
-    def set_test_data_loader_pickle_path(self, path, name='cifar10'):
+    def set_test_data_loader_pickle_path(self, path, name='wikitext2'):
         self.test_data_loader_pickle_path[name] = path
 
     def get_test_data_loader_pickle_path(self):

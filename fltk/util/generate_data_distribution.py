@@ -2,7 +2,7 @@ import pathlib
 import os
 import logging
 
-from fltk.datasets import CIFAR10Dataset, FashionMNISTDataset, CIFAR100Dataset
+from fltk.datasets import CIFAR10Dataset, FashionMNISTDataset, CIFAR100Dataset, WikiText2Dataset
 from fltk.util.arguments import Arguments
 from fltk.util.data_loader_utils import generate_train_loader, generate_test_loader, save_data_loader_to_file
 
@@ -68,3 +68,24 @@ if __name__ == '__main__':
 
     with open(TEST_DATA_LOADER_FILE_PATH, "wb") as f:
         save_data_loader_to_file(test_data_loader, f)
+
+
+    # ---------------------------------
+    # ------------ WIKITEXT2 ----------
+    # ---------------------------------
+    dataset = WikiText2Dataset(args)
+    TRAIN_DATA_LOADER_FILE_PATH = "data_loaders/wikitext2/train_data_loader.pickle"
+    TEST_DATA_LOADER_FILE_PATH = "data_loaders/wikitext2/test_data_loader.pickle"
+
+    if not os.path.exists("data_loaders/wikitext2"):
+        pathlib.Path("data_loaders/wikitext2").mkdir(parents=True, exist_ok=True)
+
+    train_data_loader = generate_train_loader(args, dataset)
+    test_data_loader = generate_test_loader(args, dataset)
+
+    with open(TRAIN_DATA_LOADER_FILE_PATH, "wb") as f:
+        save_data_loader_to_file(train_data_loader, f)
+
+    with open(TEST_DATA_LOADER_FILE_PATH, "wb") as f:
+        save_data_loader_to_file(test_data_loader, f)
+

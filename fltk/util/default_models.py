@@ -3,7 +3,7 @@ import os
 import torch
 import logging
 logging.basicConfig(level=logging.DEBUG)
-from fltk.nets import Cifar10CNN, FashionMNISTCNN, Cifar100ResNet, FashionMNISTResNet, Cifar10ResNet, Cifar100VGG
+from fltk.nets import Cifar10CNN, FashionMNISTCNN, Cifar100ResNet, FashionMNISTResNet, Cifar10ResNet, Cifar100VGG, WikiText2
 from fltk.util.arguments import Arguments
 
 if __name__ == '__main__':
@@ -45,3 +45,10 @@ if __name__ == '__main__':
     # ---------------------------------
     full_save_path = os.path.join(args.get_default_model_folder_path(), "Cifar100VGG.model")
     torch.save(Cifar100VGG().state_dict(), full_save_path)
+    
+    # ---------------------------------
+    # ------------ WikiText-2 ---------
+    # ---------------------------------
+    full_save_path = os.path.join(args.get_default_model_folder_path(), "WikiText2.model")
+    torch.save(WikiText2().state_dict(), full_save_path)
+    
