@@ -40,7 +40,12 @@ def generate_train_loader(args, dataset):
     train_dataset = dataset.get_train_dataset()
     X, Y = shuffle_data(args, train_dataset)
 
-    return dataset.get_data_loader_from_data(args.get_batch_size(), X, Y)
+    list_batch_sizes = args.get_batch_sizes()
+    dist = args.get_dist()
+    chosen = choose_from_dist(dist)
+    batch_size = list_batch_sizes[chosen]
+
+    return dataset.get_data_loader_from_data(batch_size, X, Y)
 
 def load_test_data_loader(logger, args):
     """
@@ -88,3 +93,14 @@ def load_saved_data_loader(file_obj):
 
 def save_data_loader_to_file(data_loader, file_obj):
     pickle.dump(data_loader, file_obj)
+
+def choose_from_dist(dist):
+    counter = 0
+    total = 0
+    r = random.random()
+    for d in dist:
+        total += d
+        if r <= total:
+            return counter
+        counter += 1
+    return -1

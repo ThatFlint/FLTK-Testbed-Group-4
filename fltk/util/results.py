@@ -12,6 +12,7 @@ class EpochData:
     class_precision: Any
     class_recall: Any
     client_id: str = None
+    theta: int
 
     def to_csv_line(self):
         delimeter = ','

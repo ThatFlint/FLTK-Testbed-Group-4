@@ -11,7 +11,8 @@ class BareConfig:
     def __init__(self):
         # self.logger = logger
 
-        self.batch_size = 10
+        self.dist = {0.2, 0.2, 0.2, 0.2, 0.2}
+        self.batch_sizes = {8, 16, 32, 64, 128}
         self.test_batch_size = 1000
         self.epochs = 1
         self.lr = 0.001
@@ -238,8 +239,11 @@ class BareConfig:
     def get_shuffle(self):
         return self.shuffle
 
-    def get_batch_size(self):
-        return self.batch_size
+    def get_dist(self):
+        return self.dist
+
+    def get_batch_sizes(self):
+        return self.batch_sizes
 
     def get_test_batch_size(self):
         return self.test_batch_size
