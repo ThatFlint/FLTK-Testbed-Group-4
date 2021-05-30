@@ -138,6 +138,7 @@ class Federator:
         for res in responses:
             epoch_data, weights, config = res[1].wait()
             self.client_data[epoch_data.client_id].append(epoch_data)
+            logging.info(f'{res[0]} had a batch size of {config[0]}')
             logging.info(f'{res[0]} had a loss of {epoch_data.loss}')
             logging.info(f'{res[0]} had a epoch data of {epoch_data}')
 
