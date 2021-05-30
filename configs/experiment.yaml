@@ -1,6 +1,6 @@
 ---
 # Experiment configuration
-total_epochs: 2
+total_epochs: 5
 epochs_per_cycle: 1
 wait_for_clients: true
 net: Cifar10CNN
@@ -13,7 +13,7 @@ tensor_board_active: true
 clients_per_round: 1
 system:
   federator:
-    hostname: '172.24.225.208'
+    hostname: '172.22.52.81'
     nic: 'eth0'
   clients:
     amount: 1
