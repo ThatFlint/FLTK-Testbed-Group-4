@@ -17,6 +17,7 @@ from fltk.datasets.distributed import DistCIFAR10Dataset
 from fltk.schedulers import MinCapableStepLR
 from fltk.util.arguments import Arguments
 from fltk.util.log import FLLogger
+from fltk.util.choose_config import choose_from_dist
 
 import yaml
 
@@ -203,7 +204,7 @@ class Client:
         if self.args.distributed:
             self.dataset.train_sampler.set_epoch(epoch)
 
-        for i, (inputs, labels) in enumerate(self.dataset.get_train_loader(), 0):
+        for i, (inputs, labels) in enumerate(self.dataset.get_train_loader(self.args.batch_size), 0):
             inputs, labels = inputs.to(self.device), labels.to(self.device)
 
             # zero the parameter gradients
@@ -270,6 +271,7 @@ class Client:
     def run_epochs(self, num_epoch):
         start_time_train = datetime.datetime.now()
         loss = weights = None
+        self.args.batch_size = choose_from_dist(self.args.dist, self.args.batch_sizes)
         for e in range(num_epoch):
             loss, weights = self.train(self.epoch_counter)
             self.epoch_counter += 1
@@ -319,7 +321,7 @@ class Client:
     def __del__(self):
         print(f'Client {self.id} is stopping')
 
-    # Sample configuration
+   # Sample configuration
     def sample_config(dist, batch_sizes):
         
         return batch_size

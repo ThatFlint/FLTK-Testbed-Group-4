@@ -12,6 +12,8 @@ class DistCIFAR10Dataset(DistDataset):
         self.init_train_dataset()
         self.init_test_dataset()
 
+    def get_train_loader(self, bs):
+        return DataLoader(self.train_dataset, batch_size=bs, sampler=self.train_sampler)
 
     def init_train_dataset(self):
         dist_loader_text = "distributed" if self.args.get_distributed() else ""
