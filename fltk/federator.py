@@ -136,7 +136,7 @@ class Federator:
             responses.append((client, _remote_method_async(Client.run_epochs, client.ref, num_epoch=epochs)))
         self.epoch_counter += epochs
         for res in responses:
-            epoch_data, weights = res[1].wait()
+            epoch_data, weights, config = res[1].wait()
             self.client_data[epoch_data.client_id].append(epoch_data)
             logging.info(f'{res[0]} had a loss of {epoch_data.loss}')
             logging.info(f'{res[0]} had a epoch data of {epoch_data}')
