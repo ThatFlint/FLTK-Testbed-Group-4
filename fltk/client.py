@@ -322,8 +322,3 @@ class Client:
 
     def __del__(self):
         print(f'Client {self.id} is stopping')
-
-   # Sample configuration
-    def sample_config(dist, batch_sizes):
-        
-        return batch_size
