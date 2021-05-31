@@ -1,6 +1,6 @@
 ---
 # Experiment configuration
-total_epochs: 5
+total_epochs: 10
 epochs_per_cycle: 1
 wait_for_clients: true
 net: Cifar10CNN
@@ -10,10 +10,10 @@ cuda: true
 experiment_prefix: 'experiment_multi_machine'
 output_location: 'output'
 tensor_board_active: true
-clients_per_round: 1
+clients_per_round: 5
 system:
   federator:
     hostname: '172.22.52.81'
     nic: 'eth0'
   clients:
-    amount: 1
+    amount: 5
