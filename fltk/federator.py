@@ -21,6 +21,7 @@ import logging
 
 from fltk.util.results import EpochData
 from fltk.util.tensor_converter import convert_distributed_data_into_numpy
+from fltk.util.update_dist import update_dist
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -131,14 +132,21 @@ class Federator:
     def remote_run_epoch(self, epochs):
         responses = []
         client_weights = []
+        chosen_configs = []
+        losses = []
+        test_datasizes = []
         selected_clients = self.select_clients(self.config.clients_per_round)
         for client in selected_clients:
             responses.append((client, _remote_method_async(Client.run_epochs, client.ref, num_epoch=epochs)))
         self.epoch_counter += epochs
         for res in responses:
-            epoch_data, weights, config = res[1].wait()
+            epoch_data, weights = res[1].wait()
+            chosen_configs.append(epoch_data.batch_size)
+            losses.append(epoch_data.loss)
+            test_datasizes.append(epoch_data.test_datasize)
             self.client_data[epoch_data.client_id].append(epoch_data)
-            logging.info(f'{res[0]} had a batch size of {config[0]}')
+            logging.info(f'{res[0]} had a batch size of {epoch_data.batch_size}')
+            logging.info(f'{res[0]} had a test data size of {epoch_data.test_datasize}')
             logging.info(f'{res[0]} had a loss of {epoch_data.loss}')
             logging.info(f'{res[0]} had a epoch data of {epoch_data}')
 
@@ -152,6 +160,7 @@ class Federator:
 
             client_weights.append(weights)
         updated_model = average_nn_parameters(client_weights)
+        # updated_dist = update_dist(chosen_configs, losses)
 
         responses = []
         for client in self.clients:

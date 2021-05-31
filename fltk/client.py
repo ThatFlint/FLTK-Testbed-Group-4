@@ -272,6 +272,7 @@ class Client:
         start_time_train = datetime.datetime.now()
         loss = weights = None
         self.args.batch_size = choose_from_dist(self.args.dist, self.args.batch_sizes)
+        test_datasize = 16 # Value obtained from cifar10.py
         for e in range(num_epoch):
             loss, weights = self.train(self.epoch_counter)
             self.epoch_counter += 1
@@ -283,15 +284,15 @@ class Client:
         elapsed_time_test = datetime.datetime.now() - start_time_test
         test_time_ms = int(elapsed_time_test.total_seconds()*1000)
 
-        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, client_id=self.id)
+        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, client_id=self.id)
         self.epoch_results.append(data)
 
-        config = [self.args.batch_size]
+        # config = [self.args.batch_size]
 
         # Copy GPU tensors to CPU
         for k, v in weights.items():
             weights[k] = v.cpu()
-        return data, weights, config
+        return data, weights
 
     def save_model(self, epoch, suffix):
         """
@@ -319,6 +320,9 @@ class Client:
 
     def get_client_datasize(self):
         return len(self.dataset.get_train_sampler())
+
+    def get_client_test_datasize(self):
+        return len(self.dataset.get_test_sampler())
 
     def __del__(self):
         print(f'Client {self.id} is stopping')
