@@ -5,7 +5,7 @@ import math
 # 2. configs, the possible configurations
 # 3. chosen_configs, the configurations chosen by clients in one epoch
 # 4. losses: loss sent by each client
-# 5. size of the validation set of each client
+# 5. size of the test data size of each client
 def update_dist(dist, configs, chosen_configs, losses, V):
     new_dist = []
     for p in dist:
@@ -40,7 +40,7 @@ def update_dist(dist, configs, chosen_configs, losses, V):
 if __name__ == "__main__":
     dist = [0.2, 0.2, 0.2, 0.2, 0.2]
     configs = [10, 16, 32, 64, 128]
-    chosen_configs = [10, 128, 64, 32, 16]
+    chosen_configs = [10, 128, 64, 64, 16]
     losses = [600, 200, 350, 400, 500]
     V = [10, 10, 10, 10, 10]
     new_dist = update_dist(dist, configs, chosen_configs, losses, V)
