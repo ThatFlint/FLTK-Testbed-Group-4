@@ -13,6 +13,7 @@ class EpochData:
     class_recall: Any
     batch_size: int
     test_datasize: int
+    dist: Any
     client_id: str = None
 
     def to_csv_line(self):
