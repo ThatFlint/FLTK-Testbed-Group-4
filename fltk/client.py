@@ -240,7 +240,7 @@ class Client:
         pred_ = []
         loss = 0.0
         with torch.no_grad():
-            for (images, labels) in self.dataset.get_test_loader():
+            for (images, labels) in self.dataset.get_test_loader(self.args.batch_size):
                 images, labels = images.to(self.device), labels.to(self.device)
 
                 outputs = self.net(images)
@@ -272,7 +272,7 @@ class Client:
         start_time_train = datetime.datetime.now()
         loss = weights = None
         self.args.batch_size = choose_from_dist(self.args.dist, self.args.batch_sizes)
-        test_datasize = 16 # Value obtained from cifar10.py
+        test_datasize = self.args.batch_size # Testing data batch size equals training data batch size
         for e in range(num_epoch):
             loss, weights = self.train(self.epoch_counter)
             self.epoch_counter += 1
@@ -284,7 +284,7 @@ class Client:
         elapsed_time_test = datetime.datetime.now() - start_time_test
         test_time_ms = int(elapsed_time_test.total_seconds()*1000)
 
-        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, client_id=self.id)
+        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, self.args.dist, client_id=self.id)
         self.epoch_results.append(data)
 
         # config = [self.args.batch_size]
@@ -326,3 +326,9 @@ class Client:
 
     def __del__(self):
         print(f'Client {self.id} is stopping')
+
+    def update_client_dist(self, new_dist):
+        for i in range(len(new_dist)):
+            self.args.dist[i] = new_dist[i]
+        self.remote_log(f'Distribution of the configurations is updated')
+

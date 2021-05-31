@@ -160,7 +160,8 @@ class Federator:
 
             client_weights.append(weights)
         updated_model = average_nn_parameters(client_weights)
-        # updated_dist = update_dist(chosen_configs, losses)
+        self.config.dist = update_dist(self.config.dist, self.config.batch_sizes, chosen_configs, losses, test_datasizes)
+        print(f"Updated distribution: {self.config.dist}")
 
         responses = []
         for client in self.clients:
@@ -170,6 +171,16 @@ class Federator:
         for res in responses:
             res[1].wait()
         logging.info('Weights are updated')
+
+        # Send distribution to the client
+        responses = []
+        for client in self.clients:
+            responses.append(
+                (client, _remote_method_async(Client.update_client_dist, client.ref, new_dist=self.config.dist)))
+
+        for res in responses:
+            res[1].wait()
+        logging.info('Distribution is updated')
 
     def update_client_data_sizes(self):
         responses = []
