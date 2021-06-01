@@ -1,7 +1,7 @@
 ---
 # Experiment configuration
-total_epochs: 10
-epochs_per_cycle: 1
+total_epochs: 10 # Here epochs communication round
+epochs_per_cycle: 1 # Here cycle means communication round, and epoch means local iterations
 wait_for_clients: true
 net: Cifar10CNN
 dataset: cifar10
@@ -13,7 +13,7 @@ tensor_board_active: true
 clients_per_round: 5
 system:
   federator:
-    hostname: '172.22.52.81'
+    hostname: '172.22.53.138'
     nic: 'eth0'
   clients:
     amount: 5
