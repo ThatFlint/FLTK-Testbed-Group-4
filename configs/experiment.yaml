@@ -3,8 +3,8 @@
 total_epochs: 10 # Here epoch means communication round
 epochs_per_cycle: 1 # Here cycle means communication round, and epoch means local iterations
 wait_for_clients: true
-net: Cifar10CNN
-dataset: cifar10
+net: FashionMNIST
+dataset: fashion_mnist
 # Use cuda is available; setting to false will force CPU
 cuda: true
 experiment_prefix: 'experiment_multi_machine'
