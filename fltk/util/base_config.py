@@ -58,8 +58,8 @@ class BareConfig:
 
         }
         self.net = None
-        self.set_net_by_name('Cifar10CNN')
-        self.dataset_name = 'cifar10'
+        self.set_net_by_name('FashionMNISTCNN')
+        self.dataset_name = 'fashion-mnist'
         self.train_data_loader_pickle_path = {
             'cifar10': 'data_loaders/cifar10/train_data_loader.pickle',
             'fashion-mnist': 'data_loaders/fashion-mnist/train_data_loader.pickle',
