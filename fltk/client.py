@@ -204,6 +204,7 @@ class Client:
         if self.args.distributed:
             self.dataset.train_sampler.set_epoch(epoch)
 
+        # Change the training data batch size in every communication round?
         for i, (inputs, labels) in enumerate(self.dataset.get_train_loader(self.args.batch_size), 0):
             inputs, labels = inputs.to(self.device), labels.to(self.device)
 
@@ -240,7 +241,7 @@ class Client:
         pred_ = []
         loss = 0.0
         with torch.no_grad():
-            for (images, labels) in self.dataset.get_test_loader(self.args.batch_size):
+            for (images, labels) in self.dataset.get_test_loader(16):
                 images, labels = images.to(self.device), labels.to(self.device)
 
                 outputs = self.net(images)
@@ -272,7 +273,7 @@ class Client:
         start_time_train = datetime.datetime.now()
         loss = weights = None
         self.args.batch_size = choose_from_dist(self.args.dist, self.args.batch_sizes)
-        test_datasize = self.args.batch_size # Testing data batch size equals training data batch size
+        test_datasize = 16 # Testing data batch size equals 16
         for e in range(num_epoch):
             loss, weights = self.train(self.epoch_counter)
             self.epoch_counter += 1
