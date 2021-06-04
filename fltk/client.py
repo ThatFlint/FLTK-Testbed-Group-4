@@ -14,7 +14,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 
 from fltk.datasets.distributed import DistCIFAR10Dataset
-from fltk.datasets.distributed import FashionMNISTDataset
+from fltk.datasets import FashionMNISTDataset
 from fltk.schedulers import MinCapableStepLR
 from fltk.util.arguments import Arguments
 from fltk.util.log import FLLogger
