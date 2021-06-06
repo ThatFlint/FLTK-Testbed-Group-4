@@ -15,9 +15,23 @@ def choose_from_dist(dist, configs):
     return -1
 
 # Return a random value from within a range
-def choose_from_range(range):
-    r = random.random()
-    return r * (range[1] - range[0]) + range[0]
+def setup_configs(lastdist, lastconfigs, configs):
+
+    newdist = {}
+    newconfigs = {}
+    if lastdist.size = 0:
+        for c in configs:
+            newconfigs.append({c})
+            newdist.append(1/configs.size)
+        return newdist, newconfigs
+    else:
+        for i in range{lastdist.size}:
+            for c in configs:
+                newconfigs.append(lastconfigs[i].append(c))
+                newdist.append(lastdist[i] * 1/configs.size)
+        return newdist, newconfigs
+
+
 
 if __name__ == "__main__":
     dist = [0.2, 0.3, 0.1, 0.25, 0.15]
