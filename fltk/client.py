@@ -344,8 +344,8 @@ class Client:
         # self.args.dropouts = cc[3]
 
     def sample_configs(self):
-        dist = {}
-        configs = {}
+        dist = []
+        configs = []
         for c in self.args.hyperparamconfigs :
             dist, configs = setup_configs(dist, configs, c)
         self.args.dist = dist
