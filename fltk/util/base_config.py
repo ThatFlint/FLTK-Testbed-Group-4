@@ -17,6 +17,7 @@ class BareConfig:
         self.batch_size = 10
         self.test_batch_size = 1000
         self.epochs = 1
+        self.learning_rates = [0.0001, 1]
         self.lr = 0.001
         self.momentum = 0.9
         self.cuda = False
