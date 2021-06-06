@@ -334,7 +334,7 @@ class Client:
         self.remote_log(f'Distribution of the configurations is updated')
 
     def set_hyperparameters(self):
-        self.lr = choose_from_range(self.learning_rates)
+        self.lr = 10^choose_from_range(self.learning_rates)
         self.args.batch_size = choose_from_dist(self.args.dist, self.args.batch_sizes)
 
 
