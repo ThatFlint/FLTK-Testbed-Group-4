@@ -267,7 +267,7 @@ class Client:
         self.args.get_logger().debug("Confusion Matrix:\n" + str(confusion_mat))
         self.args.get_logger().debug("Class precision: {}".format(str(class_precision)))
         self.args.get_logger().debug("Class recall: {}".format(str(class_recall)))
-        self.args.get_logger().debug("Learning rate: {}".format(str(self.lr)))
+        self.args.get_logger().debug("Learning rate: {}".format(str(self.args.lr)))
 
         return accuracy, loss, class_precision, class_recall
 
@@ -336,7 +336,5 @@ class Client:
         self.remote_log(f'Distribution of the configurations is updated')
 
     def set_hyperparameters(self):
-        self.lr = 10^choose_from_range(self.learning_rates)
+        self.args.lr = 10^choose_from_range(self.args.learning_rates)
         self.args.batch_size = choose_from_dist(self.args.dist, self.args.batch_sizes)
-
-
