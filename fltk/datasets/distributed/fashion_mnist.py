@@ -54,10 +54,10 @@ class DistFashionMNISTDataset(DistDataset):
     def load_train_dataset(self):
         self.get_args().get_logger().debug("Loading FashionMNIST train data")
 
-        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        normalize = transforms.Normalize(mean=[0.5], std=[0.5])
         transform = transforms.Compose([
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomCrop(32, 4),
+            # transforms.RandomHorizontalFlip(),
+            # transforms.RandomCrop(32, 4),
             transforms.ToTensor(),
             normalize
         ])
@@ -76,7 +76,7 @@ class DistFashionMNISTDataset(DistDataset):
     def load_test_dataset(self):
         self.get_args().get_logger().debug("Loading FashionMNIST test data")
 
-        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        normalize = transforms.Normalize(mean=[0.5], std=[0.5])
         transform = transforms.Compose([
             transforms.ToTensor(),
             normalize
