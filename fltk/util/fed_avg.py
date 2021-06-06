@@ -16,6 +16,7 @@ def average_nn_parameters(parameters):
     return new_params
 
 def fed_average_nn_parameters(parameters, sizes):
+    # In this method the importance of a client is determined by its training data size
     new_params = {}
     sum_size = 0
     for client in range(len(parameters)):
@@ -31,9 +32,3 @@ def fed_average_nn_parameters(parameters, sizes):
         new_params[name].data = new_params[name].data/sum_size
 
     return new_params
-
-if __name__=="__main__":
-    parameters = [{"1":1, "2":1}, {"1":2, "2":3}]
-    sizes = [1, 2]
-    new_params = fed_average_nn_parameters(parameters, sizes)
-    print(new_params)
