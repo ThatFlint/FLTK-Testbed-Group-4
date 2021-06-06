@@ -267,6 +267,7 @@ class Client:
         self.args.get_logger().debug("Confusion Matrix:\n" + str(confusion_mat))
         self.args.get_logger().debug("Class precision: {}".format(str(class_precision)))
         self.args.get_logger().debug("Class recall: {}".format(str(class_recall)))
+        self.args.get_logger().debug("Learning rate: {}".format(str(self.lr)))
 
         return accuracy, loss, class_precision, class_recall
 
