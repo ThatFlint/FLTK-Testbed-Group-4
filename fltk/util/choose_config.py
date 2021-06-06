@@ -14,6 +14,11 @@ def choose_from_dist(dist, configs):
             return configs[counter]
     return -1
 
+# Return a random value from within a range
+def choose_from_range(range):
+    r = random.random()
+    return r * (range[1] - range[0]) + range[0]
+
 if __name__ == "__main__":
     dist = [0.2, 0.3, 0.1, 0.25, 0.15]
     configs = [8, 16, 32, 64, 128]
