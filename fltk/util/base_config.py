@@ -43,7 +43,7 @@ class BareConfig:
         self.num_workers = 50
         # self.num_poisoned_workers = 10
         
-        self.hyperparamconfigs[self.batch_sizes, self.learning_rates]
+        self.hyperparamconfigs = [self.batch_sizes, self.learning_rates]
         self.dist = [0.2, 0.2, 0.2, 0.2, 0.2] # Initial distribution
         self.configs = []
         self.currentconfig = []
