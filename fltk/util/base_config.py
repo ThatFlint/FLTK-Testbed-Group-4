@@ -13,11 +13,10 @@ class BareConfig:
         # self.logger = logger
 
         self.batch_sizes = [10, 16, 32, 64, 128] # Possible configurations
-        self.dist = [0.2, 0.2, 0.2, 0.2, 0.2] # Initial distribution
         self.batch_size = 10
         self.test_batch_size = 1000
         self.epochs = 1
-        self.learning_rates = [-4, 0]
+        self.learning_rates = [-4, -3, -2, -1, 0]
         self.lr = 0.001
         self.momentum = 0.9
         self.cuda = False
@@ -43,6 +42,11 @@ class BareConfig:
         self.get_poison_effort = 'half'
         self.num_workers = 50
         # self.num_poisoned_workers = 10
+        
+        self.hyperparamconfigs[self.batch_sizes, self.learning_rates]
+        self.dist = [0.2, 0.2, 0.2, 0.2, 0.2] # Initial distribution
+        self.configs = []
+        self.currentconfig = []
 
         self.federator_host = '0.0.0.0'
         self.rank = 0
