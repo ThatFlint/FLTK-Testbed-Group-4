@@ -25,7 +25,7 @@ def setup_configs(lastdist, lastconfigs, configs):
             newdist.append(1/len(configs))
         return newdist, newconfigs
     else:
-        for i in range(lastdist.size):
+        for i in range(len(lastdist)):
             for c in configs:
                 newconfigs.append(lastconfigs[i].append(c))
                 newdist.append(lastdist[i] * 1/len(configs))
