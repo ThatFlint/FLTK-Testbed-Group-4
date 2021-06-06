@@ -19,7 +19,7 @@ def setup_configs(lastdist, lastconfigs, configs):
 
     newdist = []
     newconfigs = []
-    if lastdist.size == 0:
+    if not lastdist:
         for c in configs:
             newconfigs.append({c})
             newdist.append(1/configs.size)
