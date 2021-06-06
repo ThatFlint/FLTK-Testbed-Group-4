@@ -272,7 +272,7 @@ class Client:
     def run_epochs(self, num_epoch):
         start_time_train = datetime.datetime.now()
         loss = weights = None
-        self.args.batch_size = choose_from_dist(self.args.dist, self.args.batch_sizes)
+        self.set_hyperparameters()
         test_datasize = self.args.batch_size # Testing data batch size equals training data batch size
         for e in range(num_epoch):
             loss, weights = self.train(self.epoch_counter)
