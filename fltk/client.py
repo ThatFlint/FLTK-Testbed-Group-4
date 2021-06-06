@@ -18,7 +18,7 @@ from fltk.datasets import FashionMNISTDataset
 from fltk.schedulers import MinCapableStepLR
 from fltk.util.arguments import Arguments
 from fltk.util.log import FLLogger
-from fltk.util.choose_config import choose_from_dist
+from fltk.util.choose_config import choose_from_dist, choose_from_range
 
 import yaml
 
@@ -332,4 +332,9 @@ class Client:
         for i in range(len(new_dist)):
             self.args.dist[i] = new_dist[i]
         self.remote_log(f'Distribution of the configurations is updated')
+
+    def set_hyperparameters(self):
+        self.lr = choose_from_range(self.learning_rates)
+        self.args.batch_size = choose_from_dist(self.args.dist, self.args.batch_sizes)
+
 
