@@ -18,7 +18,7 @@ from fltk.datasets.distributed import DistFashionMNISTDataset
 from fltk.schedulers import MinCapableStepLR
 from fltk.util.arguments import Arguments
 from fltk.util.log import FLLogger
-from fltk.util.choose_config import choose_from_dist, choose_from_range
+from fltk.util.choose_config import choose_from_dist, setup_configs
 
 import yaml
 
@@ -72,6 +72,7 @@ class Client:
                                           self.args.get_scheduler_step_size(),
                                           self.args.get_scheduler_gamma(),
                                           self.args.get_min_lr())
+        self.sample_configs()
 
     def init_device(self):
         if self.args.cuda and torch.cuda.is_available():
@@ -336,5 +337,16 @@ class Client:
         self.remote_log(f'Distribution of the configurations is updated')
 
     def set_hyperparameters(self):
-        self.args.lr = 10 ** choose_from_range(self.args.learning_rates)
-        self.args.batch_size = choose_from_dist(self.args.dist, self.args.batch_sizes)
+        cc = choose_from_dist(self.args.dist, self.args.configs)
+        self.args.currentconfig = cc
+        self.args.batch_size = cc[0]
+        self.args.lr = cc[1]
+        # self.args.dropouts = cc[3]
+
+    def sample_configs(self):
+        dist = {}
+        configs = {}
+        for c in self.args.hyperparamconfigs :
+            dist, configs = setup_configs(dist, configs, c)
+        self.args.dist = dist
+        self.args.configs = configs
