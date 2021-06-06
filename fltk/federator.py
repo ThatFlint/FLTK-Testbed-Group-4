@@ -1,4 +1,6 @@
 import datetime
+from distutils.command.config import config
+from math import dist
 import time
 from typing import List
 
@@ -21,7 +23,7 @@ import logging
 
 from fltk.util.results import EpochData
 from fltk.util.tensor_converter import convert_distributed_data_into_numpy
-from fltk.util.update_dist import update_dist
+from fltk.util.update_dist import update_dist, cal_dist_entropy
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -161,9 +163,21 @@ class Federator:
                                         self.epoch_counter * res[0].data_size)
 
             client_weights.append(weights)
+        
+        # Calculate the entropy of the current distribution
+        self.config.old_entropy = cal_dist_entropy(self.config.dist)
+        print(f"Old entropy: {self.config.old_entropy}")
+
+        # Update weights
         updated_model = fed_average_nn_parameters(client_weights, train_datasizes)
+
+        # Update distributions
         self.config.dist = update_dist(self.config.dist, self.config.batch_sizes, chosen_configs, losses, test_datasizes)
         print(f"Updated distribution: {self.config.dist}")
+
+        # Calculate the entropy of the updated distribution
+        self.config.new_entropy = cal_dist_entropy(self.config.dist)
+        print(f"New entropy: {self.config.new_entropy}")
 
         responses = []
         for client in self.clients:
@@ -227,12 +241,16 @@ class Federator:
 
         epoch_to_run = self.num_epoch
         addition = 0
-        epoch_to_run = self.config.epochs
+        epoch_to_run = self.config.epochs # Isn't epochs equal to 1 in base_config? How is it changed?
         epoch_size = self.config.epochs_per_cycle
         for epoch in range(epoch_to_run):
-            print(f'Running epoch {epoch}')
-            self.remote_run_epoch(epoch_size)
-            addition += 1
+            # If the change of the distribution entropy > threshold, execute remote_run_epoch 
+            if (abs(self.config.new_entropy-self.config.old_entropy) > self.config.entropy_threshold):
+                print(f'Running epoch {epoch}')
+                self.remote_run_epoch(epoch_size)
+                addition += 1
+            else:
+                break
         logging.info('Printing client data')
         print(self.client_data)
 

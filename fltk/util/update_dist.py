@@ -1,3 +1,5 @@
+'''Update the distribution of configurations and calculate the cross entropy'''
+
 import math
 
 
@@ -36,6 +38,12 @@ def update_dist(dist, configs, chosen_configs, losses, V):
         new_dist[j] = new_dist[j]/sum_p
     return new_dist
 
+def cal_dist_entropy(dist):
+    entropy = 0.0
+    for i in range(len(dist)):
+        entropy += -dist[i]*math.log(dist[i])
+    return entropy
+
 
 if __name__ == "__main__":
     dist = [0.2, 0.2, 0.2, 0.2, 0.2]
@@ -44,6 +52,9 @@ if __name__ == "__main__":
     losses = [600, 200, 350, 400, 500]
     V = [10, 10, 10, 10, 10]
     new_dist = update_dist(dist, configs, chosen_configs, losses, V)
+    old_entropy = cal_dist_entropy(dist)
+    new_entropy = cal_dist_entropy(new_dist)
     print(f"dist: {dist}")
     print(f"New dist: {new_dist}")
+    print(f"Old entropy: {old_entropy}\nNew entropy: {new_entropy}")
 

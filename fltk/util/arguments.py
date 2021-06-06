@@ -1,8 +1,10 @@
+from dis import dis
+from fltk.util.update_dist import cal_dist_entropy
 import torch.nn.functional as F
 
 import torch
 import json
-from fltk.util.choose_config import choose_from_dist
+
 
 # Setting the seed for Torch
 import yaml
@@ -18,10 +20,13 @@ class Arguments:
         self.logger = logger
 
         self.batch_sizes = [10, 16, 32, 64, 128] # Possible configurations
-        self.dist = [0.2, 0.2, 0.2, 0.2, 0.2] # Initial distribution
+        self.dist = [0.2, 0.2, 0.2, 0.2, 0.2]    # Initial distribution
+        self.old_entropy = cal_dist_entropy(self.dist)
+        self.new_entropy = 10 * self.old_entropy # New_entropy - old_entropy > threshold
+        self.entropy_threshold = 0.01            # Threshold in the paper is 0.0001
         self.batch_size = 10
         self.test_batch_size = 1000
-        self.epochs = 1
+        self.epochs = 1 # To be modifed
         self.lr = 0.001
         self.momentum = 0.9
         self.cuda = False
