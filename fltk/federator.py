@@ -12,7 +12,7 @@ from fltk.util.arguments import Arguments
 from fltk.util.base_config import BareConfig
 from fltk.util.data_loader_utils import load_train_data_loader, load_test_data_loader, \
     generate_data_loaders_from_distributed_dataset
-from fltk.util.fed_avg import average_nn_parameters
+from fltk.util.fed_avg import fed_average_nn_parameters
 from fltk.util.log import FLLogger
 from torchsummary import summary
 from torch.utils.tensorboard import SummaryWriter
@@ -135,6 +135,7 @@ class Federator:
         chosen_configs = []
         losses = []
         test_datasizes = []
+        train_datasizes = []
         selected_clients = self.select_clients(self.config.clients_per_round)
         for client in selected_clients:
             responses.append((client, _remote_method_async(Client.run_epochs, client.ref, num_epoch=epochs)))
@@ -144,6 +145,7 @@ class Federator:
             chosen_configs.append(epoch_data.batch_size)
             losses.append(epoch_data.loss)
             test_datasizes.append(epoch_data.test_datasize)
+            train_datasizes.append(epoch_data.batch_size)
             self.client_data[epoch_data.client_id].append(epoch_data)
             logging.info(f'{res[0]} had a batch size of {epoch_data.batch_size}')
             logging.info(f'{res[0]} had a test data size of {epoch_data.test_datasize}')
@@ -159,7 +161,7 @@ class Federator:
                                         self.epoch_counter * res[0].data_size)
 
             client_weights.append(weights)
-        updated_model = average_nn_parameters(client_weights)
+        updated_model = fed_average_nn_parameters(client_weights, train_datasizes)
         self.config.dist = update_dist(self.config.dist, self.config.batch_sizes, chosen_configs, losses, test_datasizes)
         print(f"Updated distribution: {self.config.dist}")
 
