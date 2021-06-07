@@ -335,12 +335,11 @@ class Client:
         self.remote_log(f'Distribution of the configurations is updated')
 
     def set_hyperparameters(self):
-        cc = choose_from_dist(self.args.dist, self.args.configs)
-        if not cc:
+        if not self.args.configs:
             self.sample_configs()
             self.args.get_logger().debug("Configurations: {}".format(self.args.configs))
             self.args.get_logger().debug("Distribution: {}".format(self.args.dist))
-            cc = choose_from_dist(self.args.dist, self.args.configs)
+        cc = choose_from_dist(self.args.dist, self.args.configs)
         self.args.currentconfig = cc
         self.args.get_logger().debug("Current configuration: {}".format(str(cc)))
         self.args.batch_size = cc[0]
