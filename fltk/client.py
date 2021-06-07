@@ -71,7 +71,10 @@ class Client:
         self.scheduler = MinCapableStepLR(self.args.get_logger(), self.optimizer,
                                           self.args.get_scheduler_step_size(),
                                           self.args.get_scheduler_gamma(),
-                                          self.args.get_min_lr())
+                                          self.args.get_min_lr())                          
+        self.sample_configs()
+        self.args.get_logger().debug("Configurations: {}".format(self.args.configs))
+        self.args.get_logger().debug("Distribution: {}".format(self.args.dist))
 
     def init_device(self):
         if self.args.cuda and torch.cuda.is_available():
@@ -335,10 +338,6 @@ class Client:
         self.remote_log(f'Distribution of the configurations is updated')
 
     def set_hyperparameters(self):
-        if not self.args.configs:
-            self.sample_configs()
-            self.args.get_logger().debug("Configurations: {}".format(self.args.configs))
-            self.args.get_logger().debug("Distribution: {}".format(self.args.dist))
         cc = choose_from_dist(self.args.dist, self.args.configs)
         self.args.currentconfig = cc
         self.args.get_logger().debug("Current configuration: {}".format(str(cc)))

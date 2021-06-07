@@ -45,7 +45,7 @@ class BareConfig:
         
         self.hyperparamconfigs = [self.batch_sizes, self.learning_rates]
         self.dist = [0.2, 0.2, 0.2, 0.2, 0.2] # Initial distribution
-        self.configs = []
+        self.configs = [[10, -4],[128, -4],[10, 0],[128, 0]] # Initial configs
         self.currentconfig = []
 
         self.federator_host = '0.0.0.0'
