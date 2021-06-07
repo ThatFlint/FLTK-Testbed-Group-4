@@ -338,6 +338,8 @@ class Client:
         cc = choose_from_dist(self.args.dist, self.args.configs)
         if not cc:
             self.sample_configs()
+            self.args.get_logger().debug("Configurations: {}".format(self.args.configs))
+            self.args.get_logger().debug("Distribution: {}".format(self.args.dist))
             cc = choose_from_dist(self.args.dist, self.args.configs)
         self.args.currentconfig = cc
         self.args.get_logger().debug("Current configuration: {}".format(str(cc)))
