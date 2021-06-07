@@ -72,7 +72,6 @@ class Client:
                                           self.args.get_scheduler_step_size(),
                                           self.args.get_scheduler_gamma(),
                                           self.args.get_min_lr())
-        self.sample_configs()
 
     def init_device(self):
         if self.args.cuda and torch.cuda.is_available():
@@ -337,6 +336,9 @@ class Client:
 
     def set_hyperparameters(self):
         cc = choose_from_dist(self.args.dist, self.args.configs)
+        if not cc:
+            self.sample_configs()
+            cc = choose_from_dist(self.args.dist, self.args.configs)
         self.args.currentconfig = cc
         self.args.get_logger().debug("Current configuration: {}".format(str(cc)))
         self.args.batch_size = cc[0]
