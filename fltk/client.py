@@ -268,7 +268,6 @@ class Client:
         self.args.get_logger().debug("Confusion Matrix:\n" + str(confusion_mat))
         self.args.get_logger().debug("Class precision: {}".format(str(class_precision)))
         self.args.get_logger().debug("Class recall: {}".format(str(class_recall)))
-        self.args.get_logger().debug("Learning rate: {}".format(str(self.args.lr)))
 
         return accuracy, loss, class_precision, class_recall
 
@@ -339,6 +338,7 @@ class Client:
     def set_hyperparameters(self):
         cc = choose_from_dist(self.args.dist, self.args.configs)
         self.args.currentconfig = cc
+        self.args.get_logger().debug("Current configuration: {}".format(str(cc)))
         self.args.batch_size = cc[0]
         self.args.lr = cc[1]
         # self.args.dropouts = cc[3]
