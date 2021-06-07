@@ -17,8 +17,8 @@ def choose_from_dist(dist, configs):
 # Return a random value from within a range
 def setup_configs(lastdist, lastconfigs, configs):
 
-    newdist = []
-    newconfigs = []
+    list newdist = []
+    list newconfigs = []
     if not lastdist:
         for c in configs:
             newconfigs.append({c})
@@ -27,7 +27,9 @@ def setup_configs(lastdist, lastconfigs, configs):
     else:
         for i in range(len(lastdist)):
             for c in configs:
-                newconfigs.append(lastconfigs[i].add(c))
+                list previous = lastconfigs[i]
+                previous.append(c)
+                newconfigs.append(previous)
                 newdist.append(lastdist[i] * 1/len(configs))
         return newdist, newconfigs
 
