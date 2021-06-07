@@ -21,7 +21,8 @@ def setup_configs(lastdist, lastconfigs, configs):
     newconfigs = []
     if not lastdist:
         for c in configs:
-            newconfigs.append({c})
+            entry = [c]
+            newconfigs.append(entry)
             newdist.append(1/len(configs))
         return newdist, newconfigs
     else:
