@@ -17,7 +17,8 @@ class Arguments:
     def __init__(self, logger):
         self.logger = logger
 
-        self.batch_sizes = [10, 16, 32, 64, 128] # Possible configurations
+        # self.batch_sizes = [10, 16, 32, 64, 128] # Possible configurations
+        self.batch_sizes = [16]
         self.batch_size = 10
         self.test_batch_size = 1000
         self.epochs = 1
