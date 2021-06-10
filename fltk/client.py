@@ -64,6 +64,7 @@ class Client:
         self.args.init_logger(logging)
         self.device = self.init_device()
         self.set_net(self.load_default_model())
+        self.sample_configs()
         self.loss_function = self.args.get_loss_function()()
         self.optimizer = torch.optim.SGD(self.net.parameters(),
                                          lr=self.args.get_learning_rate(),
@@ -71,8 +72,7 @@ class Client:
         self.scheduler = MinCapableStepLR(self.args.get_logger(), self.optimizer,
                                           self.args.get_scheduler_step_size(),
                                           self.args.get_scheduler_gamma(),
-                                          self.args.get_min_lr())                          
-        self.sample_configs()
+                                          self.args.get_min_lr())
         self.args.get_logger().debug("Configurations: {}".format(self.args.configs))
         self.args.get_logger().debug("Distribution: {}".format(self.args.dist))
 
