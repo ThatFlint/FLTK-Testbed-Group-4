@@ -297,7 +297,7 @@ class Client:
         # Copy GPU tensors to CPU
         for k, v in weights.items():
             weights[k] = v.cpu()
-        return data, weights, config
+        return data, weights
 
     def save_model(self, epoch, suffix):
         """
