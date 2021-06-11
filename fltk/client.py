@@ -342,8 +342,11 @@ class Client:
         self.args.currentconfig = cc
         self.args.get_logger().debug("Current configuration: {}".format(str(cc)))
         self.args.batch_size = cc[0]
+        self.args.get_logger().debug("Previous LR: {}".format(self.optimizer.param_groups[0]['lr']))
         self.args.lr = cc[1]
+        self.args.get_logger().debug("Introduced LR: {}".format(self.args.lr))
         self.optimizer.param_groups[0]['lr'] = self.args.lr
+        self.args.get_logger().debug("New LR: {}".format(self.optimizer.param_groups[0]['lr']))
         # self.args.dropouts = cc[3]
 
     def sample_configs(self):
