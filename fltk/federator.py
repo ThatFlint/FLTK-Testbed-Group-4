@@ -30,7 +30,6 @@ logging.basicConfig(level=logging.DEBUG)
 def _call_method(method, rref, *args, **kwargs):
     return method(rref.local_value(), *args, **kwargs)
 
-
 def _remote_method(method, rref, *args, **kwargs):
     args = [method, rref] + list(args)
     return rpc.rpc_sync(rref.owner(), _call_method, args=args, kwargs=kwargs)
@@ -69,6 +68,8 @@ class Federator:
     clients: List[ClientRef] = []
     epoch_counter = 0
     client_data = {}
+    previous_weights = {}
+    comm_round = 0
 
     def __init__(self, client_id_triple, num_epochs = 3, config=None):
         log_rref = rpc.RRef(FLLogger())
@@ -131,7 +132,7 @@ class Federator:
             time.sleep(2)
         logging.info('All clients are ready')
 
-    def remote_run_epoch(self, epochs):
+    def remote_run_epoch(self, epochs): ### What is the epochs here? Is it correct to update server learning rate using epoch counter?
         responses = []
         client_weights = []
         chosen_configs = []
@@ -142,6 +143,7 @@ class Federator:
         for client in selected_clients:
             responses.append((client, _remote_method_async(Client.run_epochs, client.ref, num_epoch=epochs)))
         self.epoch_counter += epochs
+        self.comm_round += 1
         for res in responses:
             epoch_data, weights = res[1].wait()
             chosen_configs.append(epoch_data.batch_size)
@@ -168,8 +170,14 @@ class Federator:
         self.config.old_entropy = cal_dist_entropy(self.config.dist)
         print(f"Old entropy: {self.config.old_entropy}")
 
-        # Update weights
-        updated_model = fed_average_nn_parameters(client_weights, train_datasizes)
+        # Aggregate weights
+        updated_weights = fed_average_nn_parameters(self.previous_weights, client_weights, train_datasizes, self.config.server_lr)
+
+        # Store the weights for the next round
+        self.previous_weights = updated_weights
+
+        # Update server learning rate
+        self.config.server_lr = pow(self.config.server_gamma, self.comm_round)
 
         # Update distributions
         self.config.dist = update_dist(self.config.dist, self.config.batch_sizes, chosen_configs, losses, test_datasizes)
@@ -179,16 +187,17 @@ class Federator:
         self.config.new_entropy = cal_dist_entropy(self.config.dist)
         print(f"New entropy: {self.config.new_entropy}")
 
+        # Send weights to the clients
         responses = []
         for client in self.clients:
             responses.append(
-                (client, _remote_method_async(Client.update_nn_parameters, client.ref, new_params=updated_model)))
+                (client, _remote_method_async(Client.update_nn_parameters, client.ref, new_params=updated_weights)))
 
         for res in responses:
             res[1].wait()
         logging.info('Weights are updated')
 
-        # Send distribution to the client
+        # Send distribution to the clients
         responses = []
         for client in self.clients:
             responses.append(

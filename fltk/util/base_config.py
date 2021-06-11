@@ -12,11 +12,15 @@ class BareConfig:
     def __init__(self):
         # self.logger = logger
 
+        # New parameters
         self.batch_sizes = [10, 16, 32, 64, 128] # Possible configurations
         self.dist = [0.2, 0.2, 0.2, 0.2, 0.2]    # Initial distribution
         self.old_entropy = cal_dist_entropy(self.dist)
-        self.new_entropy = 1 + self.old_entropy # New_entropy - old_entropy > threshold
+        self.new_entropy = 10 * self.old_entropy # New_entropy - old_entropy > threshold
         self.entropy_threshold = 0.01            # Threshold in the paper is 0.0001
+        self.server_gamma = 1 - pow(10, -2)      # Parameter for decreasing server learning rate
+        self.server_lr = 1                       # Federator lr starts with 1, and decays over time
+        
         self.batch_size = 10
         self.test_batch_size = 1000
         self.epochs = 1

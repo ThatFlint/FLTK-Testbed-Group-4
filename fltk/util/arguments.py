@@ -1,4 +1,3 @@
-from dis import dis
 from fltk.util.update_dist import cal_dist_entropy
 import torch.nn.functional as F
 
@@ -19,14 +18,18 @@ class Arguments:
     def __init__(self, logger):
         self.logger = logger
 
+        # New parameters
         self.batch_sizes = [10, 16, 32, 64, 128] # Possible configurations
         self.dist = [0.2, 0.2, 0.2, 0.2, 0.2]    # Initial distribution
         self.old_entropy = cal_dist_entropy(self.dist)
         self.new_entropy = 10 * self.old_entropy # New_entropy - old_entropy > threshold
         self.entropy_threshold = 0.01            # Threshold in the paper is 0.0001
+        self.server_gamma = 1 - pow(10, -2)      # Parameter for decreasing server learning rate
+        self.server_lr = 1                       # Federator lr starts with 1, and decays over time
+
         self.batch_size = 10
         self.test_batch_size = 1000
-        self.epochs = 1 # To be modifed
+        self.epochs = 1
         self.lr = 0.001
         self.momentum = 0.9
         self.cuda = False
@@ -37,7 +40,8 @@ class Arguments:
         self.contribution_measurement_metric = 'Influence'
 
         self.scheduler_step_size = 50
-        self.scheduler_gamma = 0.5
+        # self.scheduler_gamma = 0.5 # decaying factor
+        self.scheduler_gamma = 1     # No decay for client learning rate
         self.min_lr = 1e-10
 
         self.round_worker_selection_strategy = None
