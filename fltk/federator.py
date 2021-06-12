@@ -171,7 +171,7 @@ class Federator:
 
             client_weights.append(weights)
         updated_model = fed_average_nn_parameters(client_weights, train_datasizes)
-        self.config.dist = update_dist(self.config.dist, self.config.batch_sizes, chosen_configs, losses, test_datasizes)
+        self.config.dist = update_dist(self.config.dist, self.config.configs, chosenconfig, losses, test_datasizes)
         print(f"Updated distribution: {self.config.dist}")
 
         responses = []
