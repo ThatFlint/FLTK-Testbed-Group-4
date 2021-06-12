@@ -11,7 +11,7 @@ def choose_from_dist(dist, configs):
         if r > total:
             counter += 1
         else: 
-            return configs[counter]
+            return counter
     return -1
 
 # Return a random value from within a range

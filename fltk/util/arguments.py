@@ -2,12 +2,12 @@ import torch.nn.functional as F
 
 import torch
 import json
-from fltk.util.choose_config import choose_from_dist
 
 # Setting the seed for Torch
 import yaml
 
 from fltk.nets import Cifar10CNN, FashionMNISTCNN, Cifar100ResNet, FashionMNISTResNet, Cifar10ResNet, Cifar100VGG
+from fltk.util.choose_config import setup_configs
 
 SEED = 1
 torch.manual_seed(SEED)
@@ -52,6 +52,8 @@ class Arguments:
         self.dist = [0.2, 0.2, 0.2, 0.2, 0.2] # Initial distribution
         self.configs = [[10, -4],[128, -4],[10, 0],[128, 0]] # Initial configs
         self.currentconfig = []
+
+        self.sample_configs()
 
         self.rank = 0
         self.world_size = 0
@@ -264,6 +266,14 @@ class Arguments:
 
         if epoch_idx == 1 or epoch_idx % self.save_epoch_interval == 0:
             return True
+
+    def sample_configs(self):
+        dist = []
+        configs = []
+        for c in self.config.hyperparamconfigs :
+            dist, configs = setup_configs(dist, configs, c)
+        self.dist = dist
+        self.configs = configs
 
     def log(self):
         """

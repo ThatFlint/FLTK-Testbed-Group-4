@@ -14,7 +14,7 @@ class EpochData:
     batch_size: int
     test_datasize: int
     dist: Any
-    configs: Any
+    chosen: int # index of chosen configuration tuple in configs/dist
     client_id: str = None
 
     def to_csv_line(self):

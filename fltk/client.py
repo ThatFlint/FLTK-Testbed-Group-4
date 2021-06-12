@@ -18,7 +18,7 @@ from fltk.datasets.distributed import DistFashionMNISTDataset
 from fltk.schedulers import MinCapableStepLR
 from fltk.util.arguments import Arguments
 from fltk.util.log import FLLogger
-from fltk.util.choose_config import choose_from_dist, setup_configs
+from fltk.util.choose_config import choose_from_dist
 
 import yaml
 
@@ -276,7 +276,7 @@ class Client:
     def run_epochs(self, num_epoch):
         start_time_train = datetime.datetime.now()
         loss = weights = None
-        self.set_hyperparameters()
+        chosen = self.set_hyperparameters()
         test_datasize = 16 # Testing data batch size equals training data batch size
         for e in range(num_epoch):
             loss, weights = self.train(self.epoch_counter)
@@ -289,7 +289,7 @@ class Client:
         elapsed_time_test = datetime.datetime.now() - start_time_test
         test_time_ms = int(elapsed_time_test.total_seconds()*1000)
 
-        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, self.args.dist, self.args.currentconfig, client_id=self.id)
+        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, self.args.dist, chosen, client_id=self.id)
         self.epoch_results.append(data)
 
         # Copy GPU tensors to CPU
@@ -336,18 +336,12 @@ class Client:
         self.remote_log(f'Distribution of the configurations is updated')
 
     def set_hyperparameters(self):
-        cc = choose_from_dist(self.args.dist, self.args.configs)
+        counter = choose_from_dist(self.args.dist, self.args.configs)
+        cc = self.args.configs[counter]
         self.args.currentconfig = cc
         self.args.get_logger().debug("Current configuration: {}".format(str(cc)))
         self.args.batch_size = cc[0]
         self.args.lr = 10 ** cc[1]
         self.optimizer.param_groups[0]['lr'] = self.args.lr
         # self.args.dropouts = cc[3]
-
-    def sample_configs(self):
-        dist = []
-        configs = []
-        for c in self.args.hyperparamconfigs :
-            dist, configs = setup_configs(dist, configs, c)
-        self.args.dist = dist
-        self.args.configs = configs
+        return counter

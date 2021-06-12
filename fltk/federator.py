@@ -142,9 +142,15 @@ class Federator:
         self.epoch_counter += epochs
         for res in responses:
             epoch_data, weights = res[1].wait()
-            batch_size = epoch_data.configs[0]
-            lr = epoch_data.configs[1]
-            chosen_configs = epoch_data.configs
+
+            # Receive index of chosen configuration in distribution.
+            numberchosen = epoch_data.chosen
+            chosenconfig = self.config.configs[numberchosen]
+            batch_size = chosenconfig[0]
+            lr = chosenconfig[1]
+            # momentum = chosenconfig[2]
+            # dropouts = chosenconfig[3]
+            
             losses.append(epoch_data.loss)
             test_datasizes.append(epoch_data.test_datasize)
             train_datasizes.append(epoch_data.batch_size)
