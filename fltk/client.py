@@ -344,6 +344,6 @@ class Client:
         self.args.momentum = cc[2]
         self.optimizer.param_groups[0]['momentum'] = self.args.momentum
         self.args.dropouts = cc[3]
-        self.net.layer1.find('drop').p = cc[3]
-        self.net.layer2.find('drop').p = cc[3]
+        self.net.layer1._modules['drop'].p = cc[3]
+        self.net.layer2._modules['drop'].p = cc[3]
         return counter

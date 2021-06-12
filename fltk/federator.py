@@ -70,6 +70,7 @@ class Federator:
     client_data = {}
     previous_weights = {}
     comm_round = 0
+    entropy = []
 
     def __init__(self, client_id_triple, num_epochs = 3, config=None):
         log_rref = rpc.RRef(FLLogger())
@@ -195,7 +196,8 @@ class Federator:
 
         # Calculate the entropy of the updated distribution
         self.config.new_entropy = cal_dist_entropy(self.config.dist)
-        print(f"New entropy: {self.config.new_entropy}")
+        self.entropy.append(self.config.new_entropy)
+        print(f"Entropy: {self.entropy}")
 
         # Send weights to the clients
         responses = []
