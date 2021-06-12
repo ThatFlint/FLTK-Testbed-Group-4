@@ -42,8 +42,7 @@ class BareConfig:
         # Other newly added parameters
         self.server_lr = 1                       # Federator learning rate
         self.server_gamma = 1 - pow(10, -2)      # Parameter for decreasing server learning rate
-        self.old_entropy = cal_dist_entropy(self.dist)
-        self.new_entropy = 10 * self.old_entropy # New_entropy - old_entropy > threshold
+        self.entropy = cal_dist_entropy(self.dist) # Entropy of the distribution
         self.entropy_threshold = 0.01            # Threshold in the paper is 0.0001
 
         self.scheduler_step_size = 50
