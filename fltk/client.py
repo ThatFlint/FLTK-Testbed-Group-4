@@ -340,7 +340,7 @@ class Client:
         self.args.currentconfig = cc
         self.args.get_logger().debug("Current configuration: {}".format(str(cc)))
         self.args.batch_size = cc[0]
-        self.args.lr = 10 ** cc[1]
+        self.args.lr = cc[1]
         self.optimizer.param_groups[0]['lr'] = self.args.lr
         # self.args.dropouts = cc[3]
         return counter
