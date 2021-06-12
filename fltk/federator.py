@@ -150,6 +150,7 @@ class Federator:
             lr = chosenconfig[1]
             # momentum = chosenconfig[2]
             # dropouts = chosenconfig[3]
+            chosen_configs.append(chosenconfig)
             
             losses.append(epoch_data.loss)
             test_datasizes.append(epoch_data.test_datasize)
@@ -171,7 +172,7 @@ class Federator:
 
             client_weights.append(weights)
         updated_model = fed_average_nn_parameters(client_weights, train_datasizes)
-        self.config.dist = update_dist(self.config.dist, self.config.configs, chosenconfig, losses, test_datasizes)
+        self.config.dist = update_dist(self.config.dist, self.config.configs, chosen_configs, losses, test_datasizes)
         print(f"Updated distribution: {self.config.dist}")
 
         responses = []
