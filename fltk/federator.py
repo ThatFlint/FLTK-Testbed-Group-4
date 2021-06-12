@@ -142,12 +142,15 @@ class Federator:
         self.epoch_counter += epochs
         for res in responses:
             epoch_data, weights = res[1].wait()
-            chosen_configs.append(epoch_data.batch_size)
+            batch_size = epoch_data.configs[0]
+            lr = epoch_data.configs[1]
+            chosen_configs = epoch_data.configs
             losses.append(epoch_data.loss)
             test_datasizes.append(epoch_data.test_datasize)
-            train_datasizes.append(epoch_data.batch_size)
+            train_datasizes.append(batch_size)
             self.client_data[epoch_data.client_id].append(epoch_data)
-            logging.info(f'{res[0]} had a batch size of {epoch_data.batch_size}')
+            logging.info(f'{res[0]} had a batch size of {batch_size}')
+            logging.info(f'{res[0]} had a learning rate of {lr}')
             logging.info(f'{res[0]} had a test data size of {epoch_data.test_datasize}')
             logging.info(f'{res[0]} had a loss of {epoch_data.loss}')
             logging.info(f'{res[0]} had a epoch data of {epoch_data}')
