@@ -64,7 +64,6 @@ class Client:
         self.args.init_logger(logging)
         self.device = self.init_device()
         self.set_net(self.load_default_model())
-        self.sample_configs()
         self.loss_function = self.args.get_loss_function()()
         self.optimizer = torch.optim.SGD(self.net.parameters(),
                                          lr=self.args.get_learning_rate(),
