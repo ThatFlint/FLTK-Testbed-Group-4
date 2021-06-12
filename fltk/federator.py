@@ -160,11 +160,11 @@ class Federator:
             test_datasizes.append(epoch_data.test_datasize)
             train_datasizes.append(epoch_data.batch_size)
             self.client_data[epoch_data.client_id].append(epoch_data)
-            logging.info(f'{res[0]} had a batch size of {batch_size}')
-            logging.info(f'{res[0]} had a learning rate of {lr}')
-            logging.info(f'{res[0]} had a test data size of {epoch_data.test_datasize}')
-            logging.info(f'{res[0]} had a loss of {epoch_data.loss}')
-            logging.info(f'{res[0]} had a epoch data of {epoch_data}')
+            # logging.info(f'{res[0]} had a batch size of {batch_size}')
+            # logging.info(f'{res[0]} had a learning rate of {lr}')
+            # logging.info(f'{res[0]} had a test data size of {epoch_data.test_datasize}')
+            # logging.info(f'{res[0]} had a loss of {epoch_data.loss}')
+            # logging.info(f'{res[0]} had a epoch data of {epoch_data}')
 
             res[0].tb_writer.add_scalar('training loss',
                                         epoch_data.loss_train,  # for every 1000 minibatches
@@ -205,7 +205,7 @@ class Federator:
 
         for res in responses:
             res[1].wait()
-        logging.info('Weights are updated')
+        # logging.info('Weights are updated')
 
         # Send distribution to the clients
         responses = []
@@ -215,7 +215,7 @@ class Federator:
 
         for res in responses:
             res[1].wait()
-        logging.info('Distribution is updated')
+        # logging.info('Distribution is updated')
 
     def update_client_data_sizes(self):
         responses = []

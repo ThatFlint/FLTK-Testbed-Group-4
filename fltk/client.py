@@ -206,8 +206,7 @@ class Client:
         final_running_loss = 0.0
         if self.args.distributed:
             self.dataset.train_sampler.set_epoch(epoch)
-
-        # Change the training data batch size in every communication round?
+            
         for i, (inputs, labels) in enumerate(self.dataset.get_train_loader(self.args.batch_size), 0):
             inputs, labels = inputs.to(self.device), labels.to(self.device)
 
