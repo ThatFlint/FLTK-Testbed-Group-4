@@ -9,6 +9,8 @@ import math
 # 4. losses: loss sent by each client
 # 5. V: size of the validation data size of each client
 def update_dist(dist, configs, chosen_configs, losses, V):
+    # Test
+    print(f"Dist: {dist}\nConfigs: {configs}\nChosen_configs: {chosen_configs}")
     new_dist = []
     for p in dist:
         new_dist.append(p)
