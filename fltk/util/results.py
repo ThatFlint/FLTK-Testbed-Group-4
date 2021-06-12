@@ -11,7 +11,7 @@ class EpochData:
     loss: float
     class_precision: Any
     class_recall: Any
-    chosen_config: Any
+    configs: Any
     test_datasize: int
     dist: Any
     client_id: str = None
