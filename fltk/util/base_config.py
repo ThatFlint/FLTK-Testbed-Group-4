@@ -28,9 +28,10 @@ class BareConfig:
         # Hyperparameters we are tuning
         self.batch_sizes = [10, 16, 32, 64, 128]
         self.learning_rates = [0.00001, 0.0001, 0.001, 0.01]  # Client learning rate
+        self.momentums = [0.6, 0.7, 0.8, 0.9]
 
         # The distribution related parameters
-        self.hyperparamconfigs = [self.batch_sizes, self.learning_rates]
+        self.hyperparamconfigs = [self.batch_sizes, self.learning_rates, self.momentums]
         self.dist = [0.2, 0.2, 0.2, 0.2, 0.2]   
         self.configs = [[10, -4],[128, -4],[10, 0],[128, 0]]
         self.currentconfig = []

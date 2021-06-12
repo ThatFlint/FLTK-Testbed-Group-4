@@ -32,9 +32,10 @@ class Arguments:
         # Hyperparameters we are tuning
         self.batch_sizes = [10, 16, 32, 64, 128]
         self.learning_rates = [0.00001, 0.0001, 0.001, 0.01]  # Client learning rate
+        self.momentums = [0.6, 0.7, 0.8, 0.9]
 
         # The distribution related parameters
-        self.hyperparamconfigs = [self.batch_sizes, self.learning_rates]
+        self.hyperparamconfigs = [self.batch_sizes, self.learning_rates, self.momentums]
         self.dist = [0.2, 0.2, 0.2, 0.2, 0.2]   
         self.configs = [[10, -4],[128, -4],[10, 0],[128, 0]]
         self.currentconfig = []
@@ -64,13 +65,6 @@ class Arguments:
         self.get_poison_effort = 'half'
         self.num_workers = 50
         # self.num_poisoned_workers = 10
-        
-        self.hyperparamconfigs = [self.batch_sizes, self.learning_rates]
-        self.dist = [0.2, 0.2, 0.2, 0.2, 0.2] # Initial distribution
-        self.configs = [[10, -4],[128, -4],[10, 0],[128, 0]] # Initial configs
-        self.currentconfig = []
-
-        self.sample_configs()
 
         self.rank = 0
         self.world_size = 0
@@ -284,7 +278,7 @@ class Arguments:
         if epoch_idx == 1 or epoch_idx % self.save_epoch_interval == 0:
             return True
 
-    def sample_configs(self):
+    def build_configs(self):
         dist = []
         configs = []
         for c in self.hyperparamconfigs :

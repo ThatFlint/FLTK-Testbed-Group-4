@@ -341,5 +341,7 @@ class Client:
         self.args.batch_size = cc[0]
         self.args.lr = cc[1]
         self.optimizer.param_groups[0]['lr'] = self.args.lr
+        self.args.momentum = cc[2]
+        self.optimizer.param_groups[0]['momentum'] = self.args.momentum
         # self.args.dropouts = cc[3]
         return counter
