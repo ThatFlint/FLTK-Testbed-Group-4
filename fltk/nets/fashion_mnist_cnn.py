@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.nn.modules import dropout
 
 class FashionMNISTCNN(nn.Module):
 
@@ -11,13 +12,15 @@ class FashionMNISTCNN(nn.Module):
             nn.Conv2d(1, 16, kernel_size=5, padding=2),
             nn.BatchNorm2d(16),
             nn.ReLU(),
-            nn.MaxPool2d(2))
+            nn.MaxPool2d(2),
+            nn.Dropout(p=0.5)) # Add drop out rate
         self.layer2 = nn.Sequential(
             nn.Conv2d(16, 32, kernel_size=5, padding=2),
             nn.BatchNorm2d(32),
             nn.ReLU(),
-            nn.MaxPool2d(2))
-
+            nn.MaxPool2d(2),
+            nn.Dropout(p=0.5)) # Add drop out rate
+        
         self.fc = nn.Linear(7*7*32, 10)
 
     def forward(self, x):
