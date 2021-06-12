@@ -294,7 +294,7 @@ class BareConfig:
     def sample_configs(self):
         dist = []
         configs = []
-        for c in self.config.hyperparamconfigs :
+        for c in self.hyperparamconfigs :
             dist, configs = setup_configs(dist, configs, c)
         self.dist = dist
         self.configs = configs
