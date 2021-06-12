@@ -70,7 +70,8 @@ class Federator:
     client_data = {}
     previous_weights = {}
     comm_round = 0
-    entropy = []
+    entropies = [] # Entropy of the distribution of configurations
+    max_grads = [] # Maximum gradients of the distribution in every round
 
     def __init__(self, client_id_triple, num_epochs = 3, config=None):
         log_rref = rpc.RRef(FLLogger())
@@ -133,7 +134,7 @@ class Federator:
             time.sleep(2)
         logging.info('All clients are ready')
 
-    def remote_run_epoch(self, epochs): ### What is the epochs here? Is it correct to update server learning rate using epoch counter?
+    def remote_run_epoch(self, epochs):
         responses = []
         client_weights = []
         chosen_configs = []
@@ -179,7 +180,6 @@ class Federator:
         
         # Calculate the entropy of the current distribution
         self.config.old_entropy = cal_dist_entropy(self.config.dist)
-        print(f"Old entropy: {self.config.old_entropy}")
 
         # Aggregate weights
         updated_weights = fed_average_nn_parameters(self.previous_weights, client_weights, train_datasizes, self.config.server_lr)
@@ -191,13 +191,13 @@ class Federator:
         self.config.server_lr = pow(self.config.server_gamma, self.comm_round)
 
         # Update distributions
-        self.config.dist = update_dist(self.config.dist, self.config.configs, chosen_configs, losses, test_datasizes)
-        print(f"Updated distribution: {self.config.dist}")
+        self.config.dist, self.max_grads = update_dist(self.config.dist, self.config.configs, chosen_configs, losses, test_datasizes, self.max_grads)
+        # print(f"Updated distribution: {self.config.dist}")
 
         # Calculate the entropy of the updated distribution
-        self.config.new_entropy = cal_dist_entropy(self.config.dist)
-        self.entropy.append(self.config.new_entropy)
-        print(f"Entropy: {self.entropy}")
+        self.config.entropy = cal_dist_entropy(self.config.dist)
+        self.entropies.append(self.config.entropy)
+        print(f"Entropies: {self.entropies}")
 
         # Send weights to the clients
         responses = []
@@ -262,11 +262,11 @@ class Federator:
 
         epoch_to_run = self.num_epoch
         addition = 0
-        epoch_to_run = self.config.epochs # Isn't epochs equal to 1 in base_config? How is it changed?
+        epoch_to_run = self.config.epochs
         epoch_size = self.config.epochs_per_cycle
         for epoch in range(epoch_to_run):
-            # If the change of the distribution entropy > threshold, execute remote_run_epoch 
-            if (abs(self.config.new_entropy-self.config.old_entropy) > self.config.entropy_threshold):
+            # If the distribution entropy > threshold, execute remote_run_epoch 
+            if (self.config.entropy > self.config.entropy_threshold):
                 print(f'Running epoch {epoch}')
                 self.remote_run_epoch(epoch_size)
                 addition += 1
