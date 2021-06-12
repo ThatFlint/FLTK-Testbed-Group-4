@@ -147,7 +147,7 @@ class Federator:
             chosen_configs = epoch_data.configs
             losses.append(epoch_data.loss)
             test_datasizes.append(epoch_data.test_datasize)
-            train_datasizes.append(batch_size)
+            train_datasizes.append(epoch_data.batch_size)
             self.client_data[epoch_data.client_id].append(epoch_data)
             logging.info(f'{res[0]} had a batch size of {batch_size}')
             logging.info(f'{res[0]} had a learning rate of {lr}')

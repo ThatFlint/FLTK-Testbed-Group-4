@@ -11,9 +11,10 @@ class EpochData:
     loss: float
     class_precision: Any
     class_recall: Any
-    configs: Any
+    batch_size: int
     test_datasize: int
     dist: Any
+    configs: Any
     client_id: str = None
 
     def to_csv_line(self):
