@@ -3,6 +3,7 @@ import json
 from fltk.util.update_dist import cal_dist_entropy
 
 from fltk.nets import Cifar10CNN, FashionMNISTCNN, Cifar100ResNet, FashionMNISTResNet, Cifar10ResNet, Cifar100VGG
+from fltk.util.choose_config import setup_configs
 
 SEED = 1
 torch.manual_seed(SEED)
@@ -13,17 +14,17 @@ class BareConfig:
         # self.logger = logger
 
         # New parameters
-        self.batch_sizes = [10, 16, 32, 64, 128] # Possible configurations
-        self.dist = [0.2, 0.2, 0.2, 0.2, 0.2]    # Initial distribution
         self.old_entropy = cal_dist_entropy(self.dist)
         self.new_entropy = 10 * self.old_entropy # New_entropy - old_entropy > threshold
         self.entropy_threshold = 0.01            # Threshold in the paper is 0.0001
         self.server_gamma = 1 - pow(10, -2)      # Parameter for decreasing server learning rate
         self.server_lr = 1                       # Federator lr starts with 1, and decays over time
-        
+
+        self.batch_sizes = [10, 16, 32, 64, 128] # Possible configurations
         self.batch_size = 10
         self.test_batch_size = 1000
         self.epochs = 1
+        self.learning_rates = [0.0001, 0.001, 0.01, 0.1]
         self.lr = 0.001
         self.momentum = 0.9
         self.cuda = False
@@ -49,6 +50,13 @@ class BareConfig:
         self.get_poison_effort = 'half'
         self.num_workers = 50
         # self.num_poisoned_workers = 10
+        
+        self.hyperparamconfigs = [self.batch_sizes, self.learning_rates]
+        self.dist = [0.2, 0.2, 0.2, 0.2, 0.2] # Initial distribution
+        self.configs = [[10, -4],[128, -4],[10, 0],[128, 0]] # Initial configs
+        self.currentconfig = []
+
+        self.sample_configs()
 
         self.federator_host = '0.0.0.0'
         self.rank = 0
@@ -290,6 +298,14 @@ class BareConfig:
 
         if epoch_idx == 1 or epoch_idx % self.save_epoch_interval == 0:
             return True
+
+    def sample_configs(self):
+        dist = []
+        configs = []
+        for c in self.hyperparamconfigs :
+            dist, configs = setup_configs(dist, configs, c)
+        self.dist = dist
+        self.configs = configs
 
     def log(self):
         """

@@ -146,12 +146,22 @@ class Federator:
         self.comm_round += 1
         for res in responses:
             epoch_data, weights = res[1].wait()
-            chosen_configs.append(epoch_data.batch_size)
+
+            # Receive index of chosen configuration in distribution.
+            numberchosen = epoch_data.chosen
+            chosenconfig = self.config.configs[numberchosen]
+            batch_size = chosenconfig[0]
+            lr = chosenconfig[1]
+            # momentum = chosenconfig[2]
+            # dropouts = chosenconfig[3]
+            chosen_configs.append(chosenconfig)
+            
             losses.append(epoch_data.loss)
             test_datasizes.append(epoch_data.test_datasize)
             train_datasizes.append(epoch_data.batch_size)
             self.client_data[epoch_data.client_id].append(epoch_data)
-            logging.info(f'{res[0]} had a batch size of {epoch_data.batch_size}')
+            logging.info(f'{res[0]} had a batch size of {batch_size}')
+            logging.info(f'{res[0]} had a learning rate of {lr}')
             logging.info(f'{res[0]} had a test data size of {epoch_data.test_datasize}')
             logging.info(f'{res[0]} had a loss of {epoch_data.loss}')
             logging.info(f'{res[0]} had a epoch data of {epoch_data}')
@@ -180,7 +190,7 @@ class Federator:
         self.config.server_lr = pow(self.config.server_gamma, self.comm_round)
 
         # Update distributions
-        self.config.dist = update_dist(self.config.dist, self.config.batch_sizes, chosen_configs, losses, test_datasizes)
+        self.config.dist = update_dist(self.config.dist, self.config.configs, chosen_configs, losses, test_datasizes)
         print(f"Updated distribution: {self.config.dist}")
 
         # Calculate the entropy of the updated distribution

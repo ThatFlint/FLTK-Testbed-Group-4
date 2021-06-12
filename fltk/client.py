@@ -72,6 +72,8 @@ class Client:
                                           self.args.get_scheduler_step_size(),
                                           self.args.get_scheduler_gamma(),
                                           self.args.get_min_lr())
+        self.args.get_logger().debug("Configurations: {}".format(self.args.configs))
+        self.args.get_logger().debug("Distribution: {}".format(self.args.dist))
 
     def init_device(self):
         if self.args.cuda and torch.cuda.is_available():
@@ -273,8 +275,8 @@ class Client:
     def run_epochs(self, num_epoch):
         start_time_train = datetime.datetime.now()
         loss = weights = None
-        self.args.batch_size = choose_from_dist(self.args.dist, self.args.batch_sizes)
-        test_datasize = 16 # Testing data batch size equals 16
+        chosen = self.set_hyperparameters()
+        test_datasize = 16 # Testing data batch size equals training data batch size
         for e in range(num_epoch):
             loss, weights = self.train(self.epoch_counter)
             self.epoch_counter += 1
@@ -286,10 +288,8 @@ class Client:
         elapsed_time_test = datetime.datetime.now() - start_time_test
         test_time_ms = int(elapsed_time_test.total_seconds()*1000)
 
-        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, self.args.dist, client_id=self.id)
+        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, self.args.dist, chosen, client_id=self.id)
         self.epoch_results.append(data)
-
-        # config = [self.args.batch_size]
 
         # Copy GPU tensors to CPU
         for k, v in weights.items():
@@ -334,3 +334,13 @@ class Client:
             self.args.dist[i] = new_dist[i]
         self.remote_log(f'Distribution of the configurations is updated')
 
+    def set_hyperparameters(self):
+        counter = choose_from_dist(self.args.dist, self.args.configs)
+        cc = self.args.configs[counter]
+        self.args.currentconfig = cc
+        self.args.get_logger().debug("Current configuration: {}".format(str(cc)))
+        self.args.batch_size = cc[0]
+        self.args.lr = cc[1]
+        self.optimizer.param_groups[0]['lr'] = self.args.lr
+        # self.args.dropouts = cc[3]
+        return counter
