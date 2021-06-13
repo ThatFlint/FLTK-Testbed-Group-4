@@ -70,8 +70,9 @@ class Federator:
     client_data = {}
     previous_weights = {}
     comm_round = 0
-    entropies = [] # Entropy of the distribution of configurations
-    max_grads = [] # Maximum gradients of the distribution in every round
+    entropies = []              # Entropy of the distribution of configurations
+    max_grads = []              # Maximum gradients of the distribution in every round
+    dist_lr_type = "aggressive" # Three types: "constant", "adaptive" and "aggressive"
 
     def __init__(self, client_id_triple, num_epochs = 3, config=None):
         log_rref = rpc.RRef(FLLogger())
@@ -191,7 +192,7 @@ class Federator:
         self.config.server_lr = pow(self.config.server_gamma, self.comm_round)
 
         # Update distributions
-        self.config.dist, self.max_grads = update_dist(self.config.dist, self.config.configs, chosen_configs, losses, test_datasizes, self.max_grads)
+        self.config.dist, self.max_grads = update_dist(self.config.dist, self.config.configs, chosen_configs, losses, test_datasizes, self.max_grads, self.dist_lr_type)
         # print(f"Updated distribution: {self.config.dist}")
 
         # Calculate the entropy of the updated distribution
@@ -252,7 +253,7 @@ class Federator:
     def save_entropies(self):
         file_output = f'./{self.config.output_location}'
         self.ensure_path_exists(file_output)
-        filename= f'{file_output}/{len(self.clients)}C_{self.epoch_counter}E_entropies.csv'
+        filename= f'{file_output}/{len(self.clients)}c_{self.epoch_counter}e_{self.dist_lr_type}_entropies.csv'
         logging.info(f'Saving data at {filename}')
         with open(filename, "w") as f:
             for entropy in self.entropies:

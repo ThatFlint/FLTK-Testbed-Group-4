@@ -3,13 +3,14 @@
 import math
 
 
-def update_dist(dist, configs, chosen_configs, losses, V, max_grads):
-    # 1. dist: the distribution of configurations
-    # 2. configs: the possible configurations
-    # 3. chosen_configs: the configurations chosen by clients in one communication round
+def update_dist(dist, configs, chosen_configs, losses, V, max_grads, dist_lr_type):
+    # 1. dist:distribution of configurations
+    # 2. configs: possible configurations
+    # 3. chosen_configs: configurations chosen by clients in one communication round
     # 4. losses: loss sent by each client
     # 5. V: size of the validation data for each client
-    # 6. max_grads: the maximum gradients w.r.t. the probability of configurations in the former rounds
+    # 6. max_grads: maximum gradients w.r.t. the probability of configurations in the former rounds
+    # 7. dist_lr_type: type of learning rate for the distribution of configurations
     
     new_dist = [p for p in dist]
     factor = 0.005    # A multiplying factor to reduce the variance of grads
@@ -28,16 +29,16 @@ def update_dist(dist, configs, chosen_configs, losses, V, max_grads):
     max_grads.append(max_grad)
 
     # Calculate the learning rate of the probabilities
-    # Type 1: constant learning rate
-    dist_lr1 = math.sqrt(2*math.log10(len(configs)))/200
-    # Type 2: adaptive (decaying) learning rate
-    dist_lr2 = dist_lr1/math.sqrt(sum([grad**2 for grad in max_grads]))
-    # Type 3: aggressive learning rate
-    dist_lr3 = dist_lr1/max_grad
+    if (dist_lr_type == "constant"):
+        dist_lr = math.sqrt(2*math.log10(len(configs)))
+    elif (dist_lr_type == "adaptive"):
+        dist_lr = math.sqrt(2*math.log10(len(configs)))/math.sqrt(sum([grad**2 for grad in max_grads]))
+    elif (dist_lr_type == "aggressive"):
+        dist_lr = math.sqrt(2*math.log10(len(configs)))/max_grad
 
     # Update distribution
     for j in range(len(dist)):
-        new_dist[j] *= math.exp(-dist_lr3*grads[j])
+        new_dist[j] *= math.exp(-dist_lr*grads[j])
 
     # Normalization
     sum_p = sum(new_dist)
