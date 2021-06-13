@@ -274,7 +274,7 @@ class Client:
     def run_epochs(self, num_epoch):
         start_time_train = datetime.datetime.now()
         loss = weights = None
-        chosen = self.set_hyperparameters()
+        chosen_config_index = self.set_hyperparameters()
         test_datasize = 16 # Testing data batch size equals training data batch size
         for e in range(num_epoch):
             loss, weights = self.train(self.epoch_counter)
@@ -287,7 +287,8 @@ class Client:
         elapsed_time_test = datetime.datetime.now() - start_time_test
         test_time_ms = int(elapsed_time_test.total_seconds()*1000)
 
-        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, self.args.dist, chosen, client_id=self.id)
+        # data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, self.args.dist, chosen, client_id=self.id)
+        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, chosen_config_index, client_id=self.id)
         self.epoch_results.append(data)
 
         # Copy GPU tensors to CPU

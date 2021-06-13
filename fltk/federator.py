@@ -150,12 +150,12 @@ class Federator:
             epoch_data, weights = res[1].wait()
 
             # Receive index of chosen configuration in distribution.
-            numberchosen = epoch_data.chosen
+            numberchosen = epoch_data.chosen_config_index
             chosenconfig = self.config.configs[numberchosen]
             batch_size = chosenconfig[0]
             lr = chosenconfig[1]
-            # momentum = chosenconfig[2]
-            # dropouts = chosenconfig[3]
+            momentum = chosenconfig[2]
+            dropouts = chosenconfig[3]
             chosen_configs.append(chosenconfig)
             
             losses.append(epoch_data.loss)
@@ -249,6 +249,15 @@ class Federator:
     def ensure_path_exists(self, path):
         Path(path).mkdir(parents=True, exist_ok=True)
 
+    def save_entropies(self):
+        file_output = f'./{self.config.output_location}'
+        self.ensure_path_exists(file_output)
+        filename= f'{file_output}/{len(self.clients)}C_{self.epoch_counter}E_entropies.csv'
+        logging.info(f'Saving data at {filename}')
+        with open(filename, "w") as f:
+            for entropy in self.entropies:
+                f.write(f'{entropy}\n')
+
     def run(self):
         """
         Main loop of the Federator
@@ -277,5 +286,6 @@ class Federator:
 
         logging.info(f'Saving data')
         self.save_epoch_data()
+        self.save_entropies()
         logging.info(f'Federator is stopping')
 
