@@ -29,7 +29,7 @@ def update_dist(dist, configs, chosen_configs, losses, V, max_grads):
 
     # Calculate the learning rate of the probabilities
     # Type 1: constant learning rate
-    dist_lr1 = math.sqrt(2*math.log10(len(configs)))
+    dist_lr1 = math.sqrt(2*math.log10(len(configs)))/200
     # Type 2: adaptive (decaying) learning rate
     dist_lr2 = dist_lr1/math.sqrt(sum([grad**2 for grad in max_grads]))
     # Type 3: aggressive learning rate
@@ -37,7 +37,7 @@ def update_dist(dist, configs, chosen_configs, losses, V, max_grads):
 
     # Update distribution
     for j in range(len(dist)):
-        new_dist[j] *= math.exp(-dist_lr2*grads[j])
+        new_dist[j] *= math.exp(-dist_lr3*grads[j])
 
     # Normalization
     sum_p = sum(new_dist)
