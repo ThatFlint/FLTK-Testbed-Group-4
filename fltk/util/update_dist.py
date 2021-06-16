@@ -30,7 +30,7 @@ def update_dist(dist, configs, chosen_configs, losses, V, max_grads, dist_lr_typ
 
     # Calculate the learning rate of the probabilities
     if (dist_lr_type == "constant"):
-        dist_lr = math.sqrt(2*math.log10(len(configs)))
+        dist_lr = math.sqrt(2*math.log10(len(configs)))/400
     elif (dist_lr_type == "adaptive"):
         dist_lr = math.sqrt(2*math.log10(len(configs)))/math.sqrt(sum([grad**2 for grad in max_grads]))
     elif (dist_lr_type == "aggressive"):
