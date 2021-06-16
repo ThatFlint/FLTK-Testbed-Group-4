@@ -23,7 +23,7 @@ class Arguments:
         self.lr = 0.001
         self.momentum = 0.9
         self.cuda = False
-        self.shuffle = False
+        self.shuffle = True
         self.log_interval = 10
         self.kwargs = {}
         self.contribution_measurement_round = 1
