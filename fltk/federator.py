@@ -259,6 +259,14 @@ class Federator:
             for entropy in self.entropies:
                 f.write(f'{entropy}\n')
 
+    def save_time(self, total_time):
+        file_output = f'./{self.config.output_location}'
+        self.ensure_path_exists(file_output)
+        filename= f'{file_output}/{len(self.clients)}c_{self.epoch_counter}e_{self.dist_lr_type}_time.csv'
+        logging.info(f'Saving data at {filename}')
+        with open(filename, "w") as f:
+                f.write(f'{total_time}\n')
+                
     def run(self):
         """
         Main loop of the Federator
@@ -274,6 +282,7 @@ class Federator:
         addition = 0
         epoch_to_run = self.config.epochs
         epoch_size = self.config.epochs_per_cycle
+        start = time.time()
         for epoch in range(epoch_to_run):
             # If the distribution entropy > threshold, execute remote_run_epoch 
             if (self.config.entropy > self.config.entropy_threshold):
@@ -282,6 +291,11 @@ class Federator:
                 addition += 1
             else:
                 break
+        end = time.time()
+        total_time = (end - start)*1000
+        logging.info('Saving total time')
+        self.save_time(total_time)
+
         logging.info('Printing client data')
         print(self.client_data)
 
