@@ -287,8 +287,8 @@ class Client:
         elapsed_time_test = datetime.datetime.now() - start_time_test
         test_time_ms = int(elapsed_time_test.total_seconds()*1000)
 
-        # data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, self.args.dist, chosen, client_id=self.id)
-        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, chosen_config_index, client_id=self.id)
+        data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, self.args.dist, chosen_config_index, client_id=self.id)
+        # data = EpochData(self.epoch_counter, train_time_ms, test_time_ms, loss, accuracy, test_loss, class_precision, class_recall, self.args.batch_size, test_datasize, chosen_config_index, client_id=self.id)
         self.epoch_results.append(data)
 
         # Copy GPU tensors to CPU

@@ -13,7 +13,7 @@ class EpochData:
     class_recall: Any
     batch_size: int
     test_datasize: int
-    # dist: Any
+    dist: Any
     chosen_config_index: int # index of chosen configuration tuple in configs/dist
     client_id: str = None
 
