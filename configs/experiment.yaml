@@ -1,6 +1,6 @@
 ---
 # Experiment configuration
-total_epochs: 10 # Here epoch means communication round
+total_epochs: 200 # Here epoch means communication round
 epochs_per_cycle: 1 # Here cycle means communication round, and epoch means local update
 wait_for_clients: true
 net: FashionMNISTCNN
@@ -10,10 +10,10 @@ cuda: true
 experiment_prefix: 'experiment_multi_machine'
 output_location: 'output'
 tensor_board_active: true
-clients_per_round: 1
+clients_per_round: 8
 system:
   federator:
     hostname: '172.22.54.4'
     nic: 'eth0'
   clients:
-    amount: 1
+    amount: 12
