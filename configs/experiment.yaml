@@ -6,14 +6,14 @@ wait_for_clients: true
 net: FashionMNISTCNN
 dataset: fashion_mnist
 # Use cuda is available; setting to false will force CPU
-cuda: true
+cuda: false
 experiment_prefix: 'experiment_multi_machine'
 output_location: 'output'
 tensor_board_active: true
 clients_per_round: 8
 system:
   federator:
-    hostname: '172.22.54.4'
+    hostname: '172.26.130.106'
     nic: 'eth0'
   clients:
     amount: 12
