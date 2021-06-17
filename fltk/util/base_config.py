@@ -19,7 +19,7 @@ class BareConfig:
         self.lr = 0.001
         self.momentum = 0.9
         self.cuda = False
-        self.shuffle = False
+        self.shuffle = True
         self.log_interval = 10
         self.kwargs = {}
         self.contribution_measurement_round = 1
@@ -33,8 +33,8 @@ class BareConfig:
 
         # The distribution related parameters
         self.hyperparamconfigs = [self.batch_sizes, self.learning_rates, self.momentums, self.dropouts]
-        self.dist = [0.2, 0.2, 0.2, 0.2, 0.2]   
-        self.configs = [[10, -4],[128, -4],[10, 0],[128, 0]]
+        self.dist = []   
+        self.configs = []
         self.currentconfig = []
 
         self.build_configs()                     # Group hyperparameters into configurations, build an uniform distribution
@@ -43,7 +43,7 @@ class BareConfig:
         self.server_lr = 1                       # Federator learning rate
         self.server_gamma = 1 - pow(10, -2)      # Parameter for decreasing server learning rate
         self.entropy = cal_dist_entropy(self.dist) # Entropy of the distribution
-        self.entropy_threshold = 0.01            # Threshold in the paper is 0.0001
+        self.entropy_threshold = 4.5            # Threshold in the paper is 0.0001
 
         self.scheduler_step_size = 50
         self.scheduler_gamma = 0.5
